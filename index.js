@@ -27,26 +27,12 @@ app.get('/search/pricecharting', async (req, res) => {
 
     const $ = cheerio.load(data);
     const results = [];
-    
-    // Debug: log the raw HTML so we can see the structure
-    console.log(data.substring(0, 2000));
 
-    $('table#games_table tbody tr').each((i, el) => {
+    // Debug: log raw HTML
+    console.log(data.substring(0, 2000));
 
     $('table#games_table tbody tr').each((i, el) => {
       if (i >= 10) return false;
       const name = $(el).find('td.title a').text().trim();
       const price = $(el).find('td.price').first().text().trim();
-      const link = 'https://www.pricecharting.com' + $(el).find('td.title a').attr('href');
-      if (name) results.push({ name, price, link });
-    });
-
-    res.json(results);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch PriceCharting', detail: err.message });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+      const link = '
