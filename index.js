@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const cheerio = require('cheerio');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,19 +22,14 @@ app.get('/search/pricecharting', async (req, res) => {
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
 
-    console.log(JSON.stringify(data).substring(0, 2000));
-    const $ = cheerio.load(data);
-    const results = [];
+    const products = data.products || [];
 
-
-
-    $('table#games_table tbody tr').each((i, el) => {
-      if (i >= 10) return false;
-      const name = $(el).find('td.title a').text().trim();
-      const price = $(el).find('td.price').first().text().trim();
-      const path = $(el).find('td.title a').attr('href');
-      const link = 'https://www.pricecharting.com' + path;
-      if (name) results.push({ name, price, link });
+    const results = products.slice(0, 10).map(function(p) {
+      return {
+        name: p.productName + ' (' + p.consoleName + ')',
+        price: p.price1,
+        link: 'https://www.pricecharting.com/game/' + p.consoleUid + '/' + p.id
+      };
     });
 
     res.json(results);
