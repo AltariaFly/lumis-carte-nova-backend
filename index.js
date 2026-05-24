@@ -23,10 +23,11 @@ app.get('/search/pricecharting', async (req, res) => {
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
 
+    console.log(JSON.stringify(data).substring(0, 2000));
     const $ = cheerio.load(data);
     const results = [];
 
-    console.log(JSON.stringify(data).substring(0, 2000));
+
 
     $('table#games_table tbody tr').each((i, el) => {
       if (i >= 10) return false;
